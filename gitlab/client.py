@@ -16,7 +16,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Wrapper for the GitLab API."""
 
+import os
 import time
+from argparse import Namespace
 from typing import Any, cast, Dict, List, Optional, Tuple, TYPE_CHECKING, Union
 
 import requests
@@ -252,6 +254,55 @@ class Gitlab(object):
             order_by=config.order_by,
             user_agent=config.user_agent,
             retry_transient_errors=config.retry_transient_errors,
+        )
+
+    @classmethod
+    def merge_config(
+        cls,
+        options: Namespace,
+        gitlab_id: Optional[str] = None,
+        config_files: Optional[List[str]] = None,
+    ) -> "Gitlab":
+        """Create a Gitlab connection by merging configuration with
+        the following precedence:
+
+        1. Explicitly provided CLI arguments,
+        2. Environment variables,
+        3. Configuration files:
+            a. explicitly defined config files:
+                i. via the `--config-file` CLI argument,
+                ii. via the `PYTHON_GITLAB_CFG` environment variable,
+            b. user-specific config file,
+            c. system-level config file,
+        4. Environment variables always present in CI (CI_SERVER_URL, CI_JOB_TOKEN).
+
+        Args:
+            options list[str]: List of options provided via the CLI.
+            gitlab_id (str): ID of the configuration section.
+            config_files list[str]: List of paths to configuration files.
+        Returns:
+            (gitlab.Gitlab): A Gitlab connection.
+
+        Raises:
+            gitlab.config.GitlabDataError: If the configuration is not correct.
+        """
+        config = gitlab.config.GitlabConfigParser(
+            gitlab_id=gitlab_id, config_files=config_files
+        )
+        return cls(
+            url=options.url or config.url or os.getenv("CI_SERVER_URL"),
+            private_token=options.private_token or config.private_token,
+            oauth_token=options.oauth_token or config.oauth_token,
+            job_token=options.job_token
+            or config.job_token
+            or os.getenv("CI_JOB_TOKEN"),
+            ssl_verify=options.ssl_verify or config.ssl_verify,
+            timeout=options.timeout or config.timeout,
+            api_version=options.api_version or config.api_version,
+            per_page=options.per_page or config.per_page,
+            pagination=options.pagination or config.pagination,
+            order_by=options.order_by or config.order_by,
+            user_agent=options.user_agent or config.user_agent,
         )
 
     def auth(self) -> None:
