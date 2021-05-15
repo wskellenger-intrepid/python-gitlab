@@ -652,9 +652,9 @@ class Gitlab(object):
         Returns:
             list: A list of the objects returned by the server. If `as_list` is
             False and no pagination-related arguments (`page`, `per_page`,
-            `all`) are defined then a GitlabList object (generator) is returned
-            instead. This object will make API calls when needed to fetch the
-            next items from the server.
+            `all`/`all_pages`) are defined then a GitlabList object (generator) is
+            returned instead. This object will make API calls when needed to fetch
+            the next items from the server.
 
         Raises:
             GitlabHttpError: When the return code is not 2xx
@@ -665,7 +665,12 @@ class Gitlab(object):
         # In case we want to change the default behavior at some point
         as_list = True if as_list is None else as_list
 
-        get_all = kwargs.pop("all", False)
+        # Provide an "all_pages" param for endpoints that also take "all" as param.
+        get_all = kwargs.pop("all_pages", None)
+
+        if get_all is None:
+            get_all = kwargs.pop("all", False)
+
         url = self._build_url(path)
 
         page = kwargs.get("page")

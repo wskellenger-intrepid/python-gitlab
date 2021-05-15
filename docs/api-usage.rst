@@ -190,6 +190,8 @@ a project (the previous example used 2 API calls):
    project = gl.projects.get(1, lazy=True)  # no API call
    project.star()  # API call
 
+.. _pagination:
+
 Pagination
 ==========
 
@@ -205,11 +207,16 @@ listing methods support the ``page`` and ``per_page`` parameters:
    The first page is page 1, not page 0.
 
 By default GitLab does not return the complete list of items. Use the ``all``
-parameter to get all the items when using listing methods:
+parameter to get all the items when using listing methods. Alternatively, if
+the endpoint also accepts an ``all`` parameter itself, you can use the
+``all_pages`` parameter for listing methods to avoid this conflict:
 
 .. code-block:: python
 
    all_groups = gl.groups.list(all=True)
+   # or
+   all_groups = gl.groups.list(all_pages=True)
+
    all_owned_projects = gl.projects.list(owned=True, all=True)
 
 You can define the ``per_page`` value globally to avoid passing it to every

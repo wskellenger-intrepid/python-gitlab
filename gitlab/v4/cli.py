@@ -152,7 +152,18 @@ def _populate_sub_parser_by_class(cls, sub_parser):
 
             sub_parser_action.add_argument("--page", required=False)
             sub_parser_action.add_argument("--per-page", required=False)
-            sub_parser_action.add_argument("--all", required=False, action="store_true")
+            sub_parser_action.add_argument(
+                "--all",
+                required=False,
+                action="store_true",
+                help="Return all items from the server, without pagination.",
+            )
+            sub_parser_action.add_argument(
+                "--all-pages",
+                required=False,
+                action="store_true",
+                help="Same as --all. Use when you need to pass `all` to the GitLab API.",
+            )
 
         if action_name == "delete":
             if cls._id_attr is not None:

@@ -36,3 +36,8 @@ I get an ``AttributeError`` when accessing attributes after ``save()`` or ``refr
     You are most likely trying to access an attribute that was not returned
     by the server on the second request. Please look at the documentation in
     :ref:`object_attributes` to see how to avoid this.
+
+I passed ``all=True`` (or ``--all`` via the CLI) to the API and I still cannot see all items returned.
+    In some cases, API endpoints take an ``all`` parameter that conflicts with python-gitlab's
+    own ``all`` used with pagination. Use ``all_pages=True`` (or ``--all-pages`` via the CLI) along
+    with ``all=True`` to really fetch all items in this case. See :ref:`pagination` for more details.

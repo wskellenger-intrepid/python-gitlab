@@ -30,7 +30,12 @@ results::
 .. note::
 
    The available ``all`` listing argument conflicts with the python-gitlab
-   argument. Use ``query_parameters`` to avoid the conflict::
+   argument. Use the ``all_pages`` argument to return all paginated items
+   if you need to pass ``all`` to the API:
+
+        commits = project.commits.list(all_pages=True, all=True)
+
+   Alternatively, use ``query_parameters`` to specify the parameters::
 
        commits = project.commits.list(all=True,
                                       query_parameters={'ref_name': 'my_branch'})
