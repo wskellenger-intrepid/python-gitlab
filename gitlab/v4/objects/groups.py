@@ -15,6 +15,7 @@ from .epics import GroupEpicManager  # noqa: F401
 from .export_import import GroupExportManager, GroupImportManager  # noqa: F401
 from .hooks import GroupHookManager  # noqa: F401
 from .issues import GroupIssueManager  # noqa: F401
+from .iterations import GroupIterationManager
 from .labels import GroupLabelManager  # noqa: F401
 from .members import (  # noqa: F401
     GroupBillableMemberManager,
@@ -57,6 +58,7 @@ class Group(SaveMixin, ObjectDeleteMixin, RESTObject):
         ("imports", "GroupImportManager"),
         ("issues", "GroupIssueManager"),
         ("issues_statistics", "GroupIssuesStatisticsManager"),
+        ("iterations", "GroupIterationManager"),
         ("labels", "GroupLabelManager"),
         ("members", "GroupMemberManager"),
         ("members_all", "GroupMemberAllManager"),
